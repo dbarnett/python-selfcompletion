@@ -13,12 +13,12 @@ class _CompletionAction(argparse.Action):
             dest=dest,
             metavar=metavar,
             default=default,
-            nargs=1,
+            nargs=None,
             type=str,
             help=help)
 
     def __call__(self, parser, namespace, values, option_string=None):
-        comp_words = re.split(r'\s+', values[0])
+        comp_words = re.split(r'\s+', values)
         comp_word = comp_words[-1]
         all_options = sum((a.option_strings for a in parser._actions), [])
         types = [a.type for a in parser._actions if a.nargs != 0 and a.type is not None]
