@@ -11,8 +11,12 @@ _foo()
         _ORIG_IFS="$IFS"
         IFS="
 "
-        COMPREPLY=( $( $prog --_completion $COMP_STR 2>/dev/null) )
+        _COMP_OUTPUT=( $( $prog --_completion $COMP_STR 2>/dev/null) )
+        comp_exitcode=$?
         IFS="$_ORIG_IFS"
+        if test $comp_exitcode -eq 0; then
+            COMPREPLY=$_COMP_OUTPUT
+        fi
     fi
 }
 
