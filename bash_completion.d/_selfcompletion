@@ -5,6 +5,13 @@
 _foo()
 {
     prog="$1"
+    case $prog in
+    *.sh)
+        # ignore shell scrips since they usually don't notice unrecognized args
+        return 1;;
+    vagrant)
+        return 1;;
+    esac
     which "$prog" >/dev/null
     if test $? -eq 0; then
         COMP_STR="${COMP_WORDS[*]}"
