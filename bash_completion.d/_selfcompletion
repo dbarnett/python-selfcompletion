@@ -2,16 +2,19 @@
 # ex: ts=8 sw=8 noet filetype=sh
 #
 
+# ignore shell scrips since they usually don't notice unrecognized args
+SELFCOMPLETION_EXCLUSIONS="*.sh
+vagrant"
+
 _foo()
 {
     prog="$1"
-    case $prog in
-    *.sh)
-        # ignore shell scrips since they usually don't notice unrecognized args
-        return 1;;
-    vagrant)
-        return 1;;
-    esac
+    while read glob_str; do
+        case $prog in
+        $glob_str)
+            return 1;;
+        esac
+    done < <( echo "$SELFCOMPLETION_EXCLUSIONS" )
     which "$prog" >/dev/null || return 1
     _COMP_OUTPUTSTR="$( $prog --_completion "${COMP_WORDS[*]}" 2>/dev/null )"
     if test $? -ne 0; then
