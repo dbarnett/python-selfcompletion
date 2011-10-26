@@ -1,0 +1,8 @@
+- make completions sensitive to context (currently, something like 'tail <TAB>'
+  and 'tail -n <TAB>' would give the same completion options, although only
+  numbers should work in the latter)
+- add support for zsh (or rule out the possibility)
+- add support for csh (or rule out the possibility)
+- add support for ksh (or rule out the possibility)
+- add support for fish (or rule out the possibility)
+- possibly add a '--_completion_script SHELL_TYPE' option to generate a traditional completion script for the program itself
