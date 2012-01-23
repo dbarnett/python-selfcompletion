@@ -4,7 +4,10 @@
 
 # ignore shell scrips since they usually don't notice unrecognized args
 SELFCOMPLETION_EXCLUSIONS="*.sh
-vagrant"
+vagrant
+gnome-open
+VirtualBox
+revelation"
 
 _foo()
 {
