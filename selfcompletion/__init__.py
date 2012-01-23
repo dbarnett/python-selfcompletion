@@ -43,5 +43,5 @@ class SelfCompletingArgumentParser(argparse.ArgumentParser):
         valid_words = [w for w in valid_words if w.startswith(words[-1])]
         if any(p.type == int for p in positionals):
             if re.match(r'\d*$', words[-1]):
-                valid_words = ['%d'%(i,) for i in xrange(10)] + valid_words
+                valid_words = ['%s%d'%(words[-1], i) for i in xrange(10)] + valid_words
         return valid_words
