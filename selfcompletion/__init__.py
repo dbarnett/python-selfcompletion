@@ -35,13 +35,44 @@ class SelfCompletingArgumentParser(argparse.ArgumentParser):
 
     def get_valid_next_words(self, words):
         valid_words = []
-        if '--' not in words[:-1]:
-            valid_words.append('-- ')
-            for a in self._actions:
-                valid_words.extend([o+' ' for o in a.option_strings])
-        positionals = self._get_positional_actions()
-        valid_words = [w for w in valid_words if w.startswith(words[-1])]
-        if any(p.type == int for p in positionals):
+        types = []
+        word_is_optarg = False
+        positionals_valid = True
+        for i in xrange(len(words) - 1):
+            w = words[-1-(i+1)]
+            if w in self._option_string_actions:
+                action = self._option_string_actions[w]
+                action_nargs = (1 if action.nargs is None else action.nargs)
+                if action_nargs == i+1:
+                    word_is_optarg = True
+                    types.append(action.type)
+                    break
+                if i+1 == 1 and action.nargs == '?':
+                    positionals_valid = False
+                    types.append(action.type)
+                    if action.choices:
+                        valid_words.extend([c+' ' for c in action.choices])
+                    break
+        if not word_is_optarg:
+            if '--' not in words[:-1]:
+                valid_words.append('-- ')
+                for a in self._actions:
+                    valid_words.extend([o+' ' for o in a.option_strings])
+            if positionals_valid:
+                positionals = self._get_positional_actions()
+                for i in xrange(len(words)-1):
+                    if len(positionals) > 0 and positionals[0].nargs in (1, None):
+                        # consume first positional
+                        positionals = positionals[1:]
+                for action in positionals:
+                    if action.type is not None:
+                        types.append(action.type)
+                    if action.choices:
+                        valid_words.extend([c+' ' for c in action.choices])
+                    if action.nargs in (None, 1):
+                        break
+        if int in types:
             if re.match(r'\d*$', words[-1]):
                 valid_words = ['%s%d'%(words[-1], i) for i in xrange(10)] + valid_words
+        valid_words = [w for w in valid_words if w.startswith(words[-1])]
         return valid_words

@@ -1,6 +1,5 @@
-- make completions sensitive to context (currently, something like 'tail <TAB>'
-  and 'tail -n <TAB>' would give the same completion options, although only
-  numbers should work in the latter)
+- make completions sensitive to context (e.g., something like 'tail -n <TAB>'
+  should only suggest numbers, unlike 'tail <TAB>')
 - add support for zsh (or rule out the possibility)
 - add support for csh (or rule out the possibility)
 - add support for ksh (or rule out the possibility)
