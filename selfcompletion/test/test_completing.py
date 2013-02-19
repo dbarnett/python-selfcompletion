@@ -226,3 +226,18 @@ class TestTakesOpt2Args(unittest.TestCase):
                 '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
             ])
 
+class TestHandlesSubParsers(unittest.TestCase):
+    def setUp(self):
+        self.parser = selfcompletion.SelfCompletingArgumentParser()
+        self.subparsers = self.parser.add_subparsers(help='commands')
+        self.subparser = self.subparsers.add_parser('foo',
+                parser_class=selfcompletion.SelfCompletingArgumentParser)
+        self.subparser.add_argument('--something')
+
+    def test_sub_command(self):
+        word_options = self.parser.get_valid_next_words(['cmd', 'foo', ''])
+        self.assertItemsEqual(word_options, [
+                '--something ',
+                '-h ', '--help ',
+                '--_completion ', '-- ',
+            ])
