@@ -28,10 +28,11 @@ class _StoreAction(argparse._StoreAction):
         return vars(self) == vars(other)
 
 class SelfCompletingArgumentParser(argparse.ArgumentParser):
-    def __init__(self, *args, **kw):
+    def __init__(self, add_completion=True, *args, **kw):
         super(SelfCompletingArgumentParser, self).__init__(*args, **kw)
-        completion_action = _CompletionAction(['--_completion'])
-        self._add_action(completion_action)
+        if add_completion:
+            completion_action = _CompletionAction(['--_completion'])
+            self._add_action(completion_action)
 
     def get_valid_next_words(self, words):
         valid_words = []
@@ -65,10 +66,19 @@ class SelfCompletingArgumentParser(argparse.ArgumentParser):
                         # consume first positional
                         positionals = positionals[1:]
                 for action in positionals:
+                    choices = action.choices
+                    if hasattr(action, 'add_parser'):
+                        last = None
+                        for word in reversed(words):
+                            if len(word) and not word.startswith('-'):
+                                last = word
+                                break
+                        if last in choices:
+                            return choices[last].get_valid_next_words(words)
                     if action.type is not None:
                         types.append(action.type)
-                    if action.choices:
-                        valid_words.extend([c+' ' for c in action.choices])
+                    if choices:
+                        valid_words.extend([c+' ' for c in choices])
                     if action.nargs in (None, 1):
                         break
         if int in types:
