@@ -28,7 +28,7 @@ class _StoreAction(argparse._StoreAction):
         return vars(self) == vars(other)
 
 class SelfCompletingArgumentParser(argparse.ArgumentParser):
-    def __init__(self, add_completion=True, parser_class=None, *args, **kw):
+    def __init__(self, add_completion=True, *args, **kw):
         super(SelfCompletingArgumentParser, self).__init__(*args, **kw)
         if add_completion:
             completion_action = _CompletionAction(['--_completion'])

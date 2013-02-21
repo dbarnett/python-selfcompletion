@@ -230,9 +230,16 @@ class TestHandlesSubParsers(unittest.TestCase):
     def setUp(self):
         self.parser = selfcompletion.SelfCompletingArgumentParser()
         self.subparsers = self.parser.add_subparsers(help='commands')
-        self.subparser = self.subparsers.add_parser('foo',
-                parser_class=selfcompletion.SelfCompletingArgumentParser)
+        self.subparser = self.subparsers.add_parser('foo')
         self.subparser.add_argument('--something')
+
+    def test_command(self):
+        word_options = self.parser.get_valid_next_words([''])
+        self.assertItemsEqual(word_options, [
+                'foo ',
+                '-h ', '--help ',
+                '--_completion ', '-- ',
+            ])
 
     def test_sub_command(self):
         word_options = self.parser.get_valid_next_words(['cmd', 'foo', ''])
